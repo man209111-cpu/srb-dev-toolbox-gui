@@ -1,11 +1,26 @@
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QTextEdit, 
+    QWidget, QVBoxLayout, QHBoxLayout, 
     QPushButton, QLabel, QCheckBox, QGroupBox, QComboBox
 )
 from PyQt6.QtCore import Qt
 from .base_tool import BaseTool
 from core.encoding_handler import Base64Handler
 from utils.worker_thread import WorkerThread
+from widgets import BigTextEdit
+from plugin import IPlugin, plugin
+
+
+@plugin(
+    plugin_id="base64_tool",
+    name="Base64 编解码",
+    version="1.0.0",
+    description="Base64 编码和解码工具",
+    author="DevTools",
+    icon="🔐"
+)
+class Base64ToolPlugin(IPlugin):
+    def create_widget(self, parent=None):
+        return Base64Tool(parent)
 
 
 class Base64Tool(BaseTool):
@@ -19,9 +34,7 @@ class Base64Tool(BaseTool):
 
         input_group = QGroupBox("输入")
         input_layout = QVBoxLayout(input_group)
-        self.input_text = QTextEdit()
-        self.input_text.setPlaceholderText("在此输入或粘贴数据...")
-        self.input_text.setAcceptRichText(False)
+        self.input_text = BigTextEdit(placeholder="在此输入或粘贴数据...")
         input_layout.addWidget(self.input_text)
 
         options_group = QGroupBox("选项")
@@ -63,9 +76,8 @@ class Base64Tool(BaseTool):
 
         output_group = QGroupBox("输出结果")
         output_layout = QVBoxLayout(output_group)
-        self.output_text = QTextEdit()
+        self.output_text = BigTextEdit(placeholder="结果将显示在这里...")
         self.output_text.setReadOnly(True)
-        self.output_text.setPlaceholderText("结果将显示在这里...")
         output_layout.addWidget(self.output_text)
 
         layout.addWidget(input_group)

@@ -1,11 +1,26 @@
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QTextEdit, 
+    QWidget, QVBoxLayout, QHBoxLayout, 
     QPushButton, QLabel, QGroupBox, QComboBox, QLineEdit
 )
 from PyQt6.QtCore import Qt
 from .base_tool import BaseTool
 from core.encoding_handler import UrlHandler
 from utils.worker_thread import WorkerThread
+from widgets import BigTextEdit
+from plugin import IPlugin, plugin
+
+
+@plugin(
+    plugin_id="url_encoder",
+    name="URL 编解码",
+    version="1.0.0",
+    description="URL 编码和解码工具",
+    author="DevTools",
+    icon="🌐"
+)
+class UrlEncoderPlugin(IPlugin):
+    def create_widget(self, parent=None):
+        return UrlEncoder(parent)
 
 
 class UrlEncoder(BaseTool):
@@ -19,9 +34,7 @@ class UrlEncoder(BaseTool):
 
         input_group = QGroupBox("输入")
         input_layout = QVBoxLayout(input_group)
-        self.input_text = QTextEdit()
-        self.input_text.setPlaceholderText("在此输入或粘贴 URL 或文本...")
-        self.input_text.setAcceptRichText(False)
+        self.input_text = BigTextEdit(placeholder="在此输入或粘贴 URL 或文本...")
         input_layout.addWidget(self.input_text)
 
         options_group = QGroupBox("选项")
@@ -65,9 +78,8 @@ class UrlEncoder(BaseTool):
 
         output_group = QGroupBox("输出结果")
         output_layout = QVBoxLayout(output_group)
-        self.output_text = QTextEdit()
+        self.output_text = BigTextEdit(placeholder="结果将显示在这里...")
         self.output_text.setReadOnly(True)
-        self.output_text.setPlaceholderText("结果将显示在这里...")
         output_layout.addWidget(self.output_text)
 
         layout.addWidget(input_group)

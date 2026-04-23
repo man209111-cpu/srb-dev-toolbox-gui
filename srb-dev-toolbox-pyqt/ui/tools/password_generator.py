@@ -6,6 +6,20 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 from .base_tool import BaseTool
 from core.password_generator import PasswordGenerator as PwdGen
+from plugin import IPlugin, plugin
+
+
+@plugin(
+    plugin_id="password_generator",
+    name="密码生成器",
+    version="1.0.0",
+    description="安全的随机密码生成器",
+    author="DevTools",
+    icon="🔒"
+)
+class PasswordGeneratorPlugin(IPlugin):
+    def create_widget(self, parent=None):
+        return PasswordGenerator(parent)
 
 
 class PasswordGenerator(BaseTool):

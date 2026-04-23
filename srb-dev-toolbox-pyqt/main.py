@@ -4,9 +4,16 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from PyQt6.QtWidgets import QApplication
-from PyQt6.QtGui import QFont, QIcon
+from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt
 
+from ui.tools import (
+    JsonFormatterPlugin,
+    Base64ToolPlugin,
+    HashGeneratorPlugin,
+    PasswordGeneratorPlugin,
+    UrlEncoderPlugin,
+)
 from ui.main_window import MainWindow
 
 

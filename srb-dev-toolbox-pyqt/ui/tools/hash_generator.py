@@ -6,6 +6,20 @@ from PyQt6.QtCore import Qt
 from .base_tool import BaseTool
 from core.crypto_handler import HashHandler
 from utils.worker_thread import WorkerThread
+from plugin import IPlugin, plugin
+
+
+@plugin(
+    plugin_id="hash_generator",
+    name="哈希生成器",
+    version="1.0.0",
+    description="支持多种哈希算法的生成工具",
+    author="DevTools",
+    icon="🔑"
+)
+class HashGeneratorPlugin(IPlugin):
+    def create_widget(self, parent=None):
+        return HashGenerator(parent)
 
 
 class HashGenerator(BaseTool):
@@ -76,6 +90,7 @@ class HashGenerator(BaseTool):
         self.output_text.setReadOnly(True)
         self.output_text.setPlaceholderText("哈希值将显示在这里...")
         self.output_text.setMaximumHeight(100)
+        self.output_text.setStyleSheet("font-family: Consolas, Monaco, monospace;")
         output_layout.addWidget(self.output_text)
 
         layout.addWidget(input_group)

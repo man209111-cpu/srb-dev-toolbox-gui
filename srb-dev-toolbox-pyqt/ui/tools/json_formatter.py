@@ -1,15 +1,31 @@
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QTextEdit, 
+    QWidget, QVBoxLayout, QHBoxLayout, 
     QPushButton, QLabel, QSpinBox, QCheckBox, QGroupBox
 )
 from PyQt6.QtCore import Qt
 from .base_tool import BaseTool
 from core.json_handler import JsonHandler
 from utils.worker_thread import WorkerThread
+from widgets import BigTextEdit
+from plugin import IPlugin, plugin
+
+
+@plugin(
+    plugin_id="json_formatter",
+    name="JSON 格式化",
+    version="1.0.0",
+    description="JSON 格式化、压缩、验证工具",
+    author="DevTools",
+    icon="📄"
+)
+class JsonFormatterPlugin(IPlugin):
+    def create_widget(self, parent=None):
+        return JsonFormatter(parent)
 
 
 class JsonFormatter(BaseTool):
     def __init__(self, parent=None):
+        self._worker = None
         super().__init__(parent)
 
     def _init_ui(self):
@@ -18,9 +34,7 @@ class JsonFormatter(BaseTool):
 
         input_group = QGroupBox("输入 JSON")
         input_layout = QVBoxLayout(input_group)
-        self.input_text = QTextEdit()
-        self.input_text.setPlaceholderText("在此输入或粘贴 JSON 数据...")
-        self.input_text.setAcceptRichText(False)
+        self.input_text = BigTextEdit(placeholder="在此输入或粘贴 JSON 数据...")
         input_layout.addWidget(self.input_text)
 
         options_group = QGroupBox("格式化选项")
@@ -66,17 +80,14 @@ class JsonFormatter(BaseTool):
 
         output_group = QGroupBox("输出结果")
         output_layout = QVBoxLayout(output_group)
-        self.output_text = QTextEdit()
+        self.output_text = BigTextEdit(placeholder="格式化结果将显示在这里...")
         self.output_text.setReadOnly(True)
-        self.output_text.setPlaceholderText("格式化结果将显示在这里...")
         output_layout.addWidget(self.output_text)
 
         layout.addWidget(input_group)
         layout.addWidget(options_group)
         layout.addWidget(btn_group)
         layout.addWidget(output_group, stretch=1)
-
-        self._worker = None
 
     def _connect_signals(self):
         self.validate_btn.clicked.connect(self._validate_json)
