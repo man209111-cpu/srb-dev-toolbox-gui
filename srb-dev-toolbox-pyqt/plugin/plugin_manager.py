@@ -54,7 +54,7 @@ class PluginManager:
 
     @classmethod
     def disable_plugin(cls, plugin_id: str) -> bool:
-        instance = cls._instances.get(plugin_id)
+        instance = cls.get_instance(plugin_id)
         if instance:
             instance.disable()
             cls._notify_status_change(plugin_id, PluginStatus.DISABLED)
@@ -64,7 +64,12 @@ class PluginManager:
     @classmethod
     def is_enabled(cls, plugin_id: str) -> bool:
         instance = cls._instances.get(plugin_id)
-        return instance.is_enabled() if instance else False
+        if instance:
+            return instance.is_enabled()
+        plugin_class = cls._plugins.get(plugin_id)
+        if plugin_class:
+            return plugin_class.get_info().status == PluginStatus.ENABLED
+        return False
 
     @classmethod
     def add_status_change_callback(cls, callback: Callable[[str, PluginStatus], None]):
